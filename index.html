@@ -2426,6 +2426,33 @@ function hideLoading() {
 }
 
 
+// ─── HELPER: carica dati da oggetto in memoria ───────
+function caricaDatiDaOggetto(all) {
+  if (!all || typeof all !== 'object') return;
+  if (all['gs_params'])       { try { params             = JSON.parse(all['gs_params']); }       catch(e) {} }
+  if (all['gs_costi'])        { try { costiVoci          = JSON.parse(all['gs_costi']); }        catch(e) {} }
+  if (all['gs_storico'])      { try { storico            = JSON.parse(all['gs_storico']); }      catch(e) {} }
+  if (all['gs_magazzino'])    { try { movMagazzino       = JSON.parse(all['gs_magazzino']); }    catch(e) {} }
+  if (all['gs_ic'])           { try { venditeIC          = JSON.parse(all['gs_ic']); }           catch(e) {} }
+  if (all['gs_voci_srl'])     { try { vociSRL            = JSON.parse(all['gs_voci_srl']); }     catch(e) {} }
+  if (all['gs_vendite'])      { try { vendite            = JSON.parse(all['gs_vendite']); }      catch(e) {} }
+  if (all['gs_vendite_srls']) { try { venditeSRLS        = JSON.parse(all['gs_vendite_srls']); } catch(e) {} }
+  if (all['gs_acquisti_det']) { try { acquistiDettaglio  = JSON.parse(all['gs_acquisti_det']); } catch(e) {} }
+  if (all['gs_acquisti']) {
+    try {
+      const raw = JSON.parse(all['gs_acquisti']);
+      if (Array.isArray(raw.srl) || Array.isArray(raw.srls)) {
+        acquisti = { srl: {}, srls: {} };
+      } else if (raw && typeof raw === 'object' && (raw.srl !== undefined || raw.srls !== undefined)) {
+        acquisti = {
+          srl:  (raw.srl  && typeof raw.srl  === 'object' && !Array.isArray(raw.srl))  ? raw.srl  : {},
+          srls: (raw.srls && typeof raw.srls === 'object' && !Array.isArray(raw.srls)) ? raw.srls : {}
+        };
+      } else { acquisti = raw; }
+    } catch(e) {}
+  }
+}
+
 // ─── MIGRAZIONE DA GOOGLE SHEETS → FIREBASE ──────────
 const GS_URL_LEGACY = 'https://script.google.com/macros/s/AKfycbyXOeR15KagoK7g8-fyZvfMWr5J_NQOQPBUGMnJlSO8B4ky4Qc00bipHWAcBlZ6Gsrh/exec';
 
